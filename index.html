@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Maker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Seed Maker</h1>
+        <p class="description">Generate random strings using entropy from your mouse movements.</p>
+        
+        <div class="entropy-section">
+            <div id="entropy-box" class="entropy-box">
+                <p>Move your mouse here to collect entropy</p>
+                <div class="progress-bar">
+                    <div id="entropy-progress" class="progress"></div>
+                </div>
+            </div>
+            <button id="time-btn" class="secondary-btn">Add Time Entropy</button>
+        </div>
+        
+        <div class="options-section">
+            <div class="option-row">
+                <label for="length-preset">Length:</label>
+                <select id="length-preset">
+                    <option value="16">16</option>
+                    <option value="32">32</option>
+                    <option value="64" selected>64</option>
+                    <option value="128">128</option>
+                    <option value="256">256</option>
+                </select>
+            </div>
+            <div class="option-row checkboxes">
+                <label><input type="checkbox" id="use-lower" checked> a-z</label>
+                <label><input type="checkbox" id="use-upper" checked> A-Z</label>
+                <label><input type="checkbox" id="use-numbers" checked> 0-9</label>
+                <label><input type="checkbox" id="use-special"> !@#$%</label>
+            </div>
+        </div>
+        
+        <div class="generate-section">
+            <button id="generate-btn" class="primary-btn">Generate</button>
+            <div class="result-box">
+                <textarea id="result" readonly placeholder="Your generated string will appear here..."></textarea>
+                <button id="copy-btn" class="copy-btn">Copy</button>
+            </div>
+        </div>
+        
+        <div class="history-section">
+            <div class="history-header">
+                <span>History</span>
+                <button id="clear-btn" class="text-btn">Clear</button>
+            </div>
+            <div id="history-list" class="history-list"></div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Runs entirely in your browser. Nothing is sent to any server.</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
