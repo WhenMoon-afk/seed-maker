@@ -22,11 +22,45 @@ body {
     padding: 24px;
 }
 
-h1 {
-    font-size: 1.5rem;
-    margin-bottom: 8px;
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 12px;
 }
 
+.tab {
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #666;
+    transition: all 0.15s;
+}
+
+.tab:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.tab.active {
+    background: #333;
+    color: #fff;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Common */
 .description {
     color: #666;
     margin-bottom: 24px;
@@ -162,15 +196,18 @@ select {
 
 textarea {
     width: 100%;
-    height: 80px;
     padding: 12px;
-    padding-right: 70px;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-family: monospace;
     font-size: 0.9rem;
     resize: none;
     background: #fff;
+}
+
+#result {
+    height: 80px;
+    padding-right: 70px;
 }
 
 .copy-btn {
@@ -238,6 +275,90 @@ textarea {
     border-bottom: none;
 }
 
+/* Text Counter */
+.counter-section {
+    margin-bottom: 20px;
+}
+
+.counter-input {
+    height: 150px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.counter-actions {
+    text-align: right;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 4px;
+}
+
+.token-section {
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.token-section h3 {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+}
+
+.token-note {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 12px;
+}
+
+.token-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.token-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #fff;
+    border-radius: 4px;
+}
+
+.token-model {
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.token-value {
+    font-family: monospace;
+    font-weight: 600;
+}
+
 /* Footer */
 footer {
     text-align: center;
@@ -254,5 +375,13 @@ footer {
     
     .container {
         padding: 16px;
+    }
+    
+    .tabs {
+        flex-wrap: wrap;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

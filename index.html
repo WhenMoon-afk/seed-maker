@@ -8,52 +8,117 @@
 </head>
 <body>
     <div class="container">
-        <h1>Seed Maker</h1>
-        <p class="description">Generate random strings using entropy from your mouse movements.</p>
-        
-        <div class="entropy-section">
-            <div id="entropy-box" class="entropy-box">
-                <p>Move your mouse here to collect entropy</p>
-                <div class="progress-bar">
-                    <div id="entropy-progress" class="progress"></div>
+        <nav class="tabs">
+            <button class="tab active" data-tab="seed-maker">Seed Maker</button>
+            <button class="tab" data-tab="text-counter">Text Counter</button>
+        </nav>
+
+        <!-- Seed Maker Tab -->
+        <div id="seed-maker" class="tab-content active">
+            <p class="description">Generate random strings using entropy from your mouse movements.</p>
+            
+            <div class="entropy-section">
+                <div id="entropy-box" class="entropy-box">
+                    <p>Move your mouse here to collect entropy</p>
+                    <div class="progress-bar">
+                        <div id="entropy-progress" class="progress"></div>
+                    </div>
+                </div>
+                <button id="time-btn" class="secondary-btn">Add Time Entropy</button>
+            </div>
+            
+            <div class="options-section">
+                <div class="option-row">
+                    <label for="length-preset">Length:</label>
+                    <select id="length-preset">
+                        <option value="16">16</option>
+                        <option value="32">32</option>
+                        <option value="64" selected>64</option>
+                        <option value="128">128</option>
+                        <option value="256">256</option>
+                    </select>
+                </div>
+                <div class="option-row checkboxes">
+                    <label><input type="checkbox" id="use-lower" checked> a-z</label>
+                    <label><input type="checkbox" id="use-upper" checked> A-Z</label>
+                    <label><input type="checkbox" id="use-numbers" checked> 0-9</label>
+                    <label><input type="checkbox" id="use-special"> !@#$%</label>
                 </div>
             </div>
-            <button id="time-btn" class="secondary-btn">Add Time Entropy</button>
-        </div>
-        
-        <div class="options-section">
-            <div class="option-row">
-                <label for="length-preset">Length:</label>
-                <select id="length-preset">
-                    <option value="16">16</option>
-                    <option value="32">32</option>
-                    <option value="64" selected>64</option>
-                    <option value="128">128</option>
-                    <option value="256">256</option>
-                </select>
+            
+            <div class="generate-section">
+                <button id="generate-btn" class="primary-btn">Generate</button>
+                <div class="result-box">
+                    <textarea id="result" readonly placeholder="Your generated string will appear here..."></textarea>
+                    <button id="copy-btn" class="copy-btn">Copy</button>
+                </div>
             </div>
-            <div class="option-row checkboxes">
-                <label><input type="checkbox" id="use-lower" checked> a-z</label>
-                <label><input type="checkbox" id="use-upper" checked> A-Z</label>
-                <label><input type="checkbox" id="use-numbers" checked> 0-9</label>
-                <label><input type="checkbox" id="use-special"> !@#$%</label>
+            
+            <div class="history-section">
+                <div class="history-header">
+                    <span>History</span>
+                    <button id="clear-btn" class="text-btn">Clear</button>
+                </div>
+                <div id="history-list" class="history-list"></div>
             </div>
         </div>
-        
-        <div class="generate-section">
-            <button id="generate-btn" class="primary-btn">Generate</button>
-            <div class="result-box">
-                <textarea id="result" readonly placeholder="Your generated string will appear here..."></textarea>
-                <button id="copy-btn" class="copy-btn">Copy</button>
+
+        <!-- Text Counter Tab -->
+        <div id="text-counter" class="tab-content">
+            <p class="description">Count characters, words, and estimate LLM tokens.</p>
+            
+            <div class="counter-section">
+                <textarea id="counter-input" class="counter-input" placeholder="Paste or type your text here..."></textarea>
+                <div class="counter-actions">
+                    <button id="counter-clear" class="text-btn">Clear</button>
+                </div>
             </div>
-        </div>
-        
-        <div class="history-section">
-            <div class="history-header">
-                <span>History</span>
-                <button id="clear-btn" class="text-btn">Clear</button>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="char-count">0</div>
+                    <div class="stat-label">Characters</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="char-no-space">0</div>
+                    <div class="stat-label">Chars (no spaces)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="word-count">0</div>
+                    <div class="stat-label">Words</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="line-count">0</div>
+                    <div class="stat-label">Lines</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="sentence-count">0</div>
+                    <div class="stat-label">Sentences</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="paragraph-count">0</div>
+                    <div class="stat-label">Paragraphs</div>
+                </div>
             </div>
-            <div id="history-list" class="history-list"></div>
+
+            <div class="token-section">
+                <h3>Token Estimates</h3>
+                <p class="token-note">Estimates vary by model. These are approximations.</p>
+                <div class="token-grid">
+                    <div class="token-row">
+                        <span class="token-model">GPT-3.5 / GPT-4</span>
+                        <span class="token-value" id="tokens-gpt">~0</span>
+                    </div>
+                    <div class="token-row">
+                        <span class="token-model">Claude</span>
+                        <span class="token-value" id="tokens-claude">~0</span>
+                    </div>
+                    <div class="token-row">
+                        <span class="token-model">Simple (chars÷4)</span>
+                        <span class="token-value" id="tokens-simple">~0</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     

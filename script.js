@@ -1,4 +1,23 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.dataset.tab;
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            tab.classList.add('active');
+            document.getElementById(target).classList.add('active');
+        });
+    });
+
+    // =====================
+    // SEED MAKER
+    // =====================
     const entropyBox = document.getElementById('entropy-box');
     const entropyProgress = document.getElementById('entropy-progress');
     const timeBtn = document.getElementById('time-btn');
@@ -14,15 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const useNumbers = document.getElementById('use-numbers');
     const useSpecial = document.getElementById('use-special');
     
-    // Entropy pool
     let entropyPool = new Uint32Array(256);
     let entropyIndex = 0;
     let mouseEntropy = 0;
     const mouseEntropyTarget = 50;
     let lastX = 0, lastY = 0;
     
-    // Initialize with crypto API and basic browser entropy
-    function init() {
+    function initSeedMaker() {
         addEntropy(Date.now());
         addEntropy(performance.now() * 1000);
         addEntropy(screen.width * screen.height);
@@ -41,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
         entropyIndex++;
     }
     
-    // Mouse entropy
     entropyBox.addEventListener('mousemove', (e) => {
         const dx = e.clientX - lastX;
         const dy = e.clientY - lastY;
@@ -64,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Time entropy
     timeBtn.addEventListener('click', () => {
         const t1 = performance.now();
         let x = 0;
@@ -79,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => timeBtn.textContent = 'Add Time Entropy', 1000);
     });
     
-    // Generate
     generateBtn.addEventListener('click', () => {
         const length = parseInt(lengthPreset.value);
         let charset = '';
@@ -111,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
         addToHistory(output);
     });
     
-    // Copy
     copyBtn.addEventListener('click', () => {
         if (result.value) {
             navigator.clipboard.writeText(result.value).then(() => {
@@ -121,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // History
     function addToHistory(str) {
         const item = document.createElement('div');
         item.className = 'history-item';
@@ -132,13 +144,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         historyList.insertBefore(item, historyList.firstChild);
         
-        // Save to localStorage
         let history = JSON.parse(localStorage.getItem('seedHistory') || '[]');
         history.unshift(str);
         if (history.length > 10) history = history.slice(0, 10);
         localStorage.setItem('seedHistory', JSON.stringify(history));
         
-        // Trim display
         while (historyList.children.length > 10) {
             historyList.removeChild(historyList.lastChild);
         }
@@ -162,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('seedHistory');
     });
     
-    // Background entropy
     document.addEventListener('click', (e) => {
         addEntropy((e.clientX << 16) | e.clientY);
     });
@@ -171,5 +180,74 @@ document.addEventListener('DOMContentLoaded', () => {
         addEntropy((e.keyCode << 16) | performance.now());
     });
     
-    init();
+    initSeedMaker();
+
+    // =====================
+    // TEXT COUNTER
+    // =====================
+    const counterInput = document.getElementById('counter-input');
+    const counterClear = document.getElementById('counter-clear');
+    
+    const charCount = document.getElementById('char-count');
+    const charNoSpace = document.getElementById('char-no-space');
+    const wordCount = document.getElementById('word-count');
+    const lineCount = document.getElementById('line-count');
+    const sentenceCount = document.getElementById('sentence-count');
+    const paragraphCount = document.getElementById('paragraph-count');
+    
+    const tokensGpt = document.getElementById('tokens-gpt');
+    const tokensClaude = document.getElementById('tokens-claude');
+    const tokensSimple = document.getElementById('tokens-simple');
+    
+    function updateCounts() {
+        const text = counterInput.value;
+        
+        // Character counts
+        const chars = text.length;
+        const charsNoSpaces = text.replace(/\s/g, '').length;
+        
+        // Word count
+        const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+        
+        // Line count
+        const lines = text === '' ? 0 : text.split(/\n/).length;
+        
+        // Sentence count (rough: split on . ! ?)
+        const sentences = text.trim() === '' ? 0 : 
+            (text.match(/[.!?]+/g) || []).length || (text.trim() ? 1 : 0);
+        
+        // Paragraph count (split on double newlines)
+        const paragraphs = text.trim() === '' ? 0 :
+            text.split(/\n\s*\n/).filter(p => p.trim()).length || (text.trim() ? 1 : 0);
+        
+        // Update display
+        charCount.textContent = chars.toLocaleString();
+        charNoSpace.textContent = charsNoSpaces.toLocaleString();
+        wordCount.textContent = words.toLocaleString();
+        lineCount.textContent = lines.toLocaleString();
+        sentenceCount.textContent = sentences.toLocaleString();
+        paragraphCount.textContent = paragraphs.toLocaleString();
+        
+        // Token estimates
+        // GPT: roughly 1 token per 4 chars for English, or ~1.3 tokens per word
+        const gptTokens = Math.ceil(chars / 4);
+        // Claude: similar to GPT, slightly different for some content
+        const claudeTokens = Math.ceil(words * 1.35);
+        // Simple: chars / 4
+        const simpleTokens = Math.ceil(chars / 4);
+        
+        tokensGpt.textContent = chars === 0 ? '~0' : `~${gptTokens.toLocaleString()}`;
+        tokensClaude.textContent = chars === 0 ? '~0' : `~${claudeTokens.toLocaleString()}`;
+        tokensSimple.textContent = chars === 0 ? '~0' : `~${simpleTokens.toLocaleString()}`;
+    }
+    
+    counterInput.addEventListener('input', updateCounts);
+    
+    counterClear.addEventListener('click', () => {
+        counterInput.value = '';
+        updateCounts();
+    });
+    
+    // Initialize counts
+    updateCounts();
 });
